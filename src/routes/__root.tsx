@@ -12,6 +12,14 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { ThemeProvider } from "@/components/theme-provider";
+import NavBar from "@/components/navbar";
+import { OfferPosterModal } from "@/components/offer-poster-modal";
+import { ReferralTracker } from "@/components/referral-tracker";
+import { BrandingSync } from "@/components/branding-sync";
+import { TelemetryTracker } from "@/components/analytics/telemetry-tracker";
+import { JsonLd, getOrganizationSchema } from "@/components/seo/json-ld";
+import Script from "next/script";
 
 function NotFoundComponent() {
   return (
@@ -78,14 +86,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "EMPIRIAL — Compare Prop Trading Firms, Rules & Payout Proof" },
+      { name: "author", content: "EMPIRIAL" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:creator", content: "@anuraj_fx" },
     ],
     links: [
       {
@@ -103,11 +108,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-background text-foreground antialiased min-h-screen flex flex-col" suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -121,7 +126,24 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-S8LMTLWN4G" />
+        <Script
+          id="google-analytics"
+          dangerouslySetInnerHTML={{
+            __html: "window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-S8LMTLWN4G');",
+          }}
+        />
+        <JsonLd data={getOrganizationSchema()} />
+        <BrandingSync />
+        <ReferralTracker />
+        <TelemetryTracker />
+        <NavBar />
+        <OfferPosterModal />
+        <main className="flex-1 w-full bg-background">
+          <Outlet />
+        </main>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

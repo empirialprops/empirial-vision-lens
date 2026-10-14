@@ -133,7 +133,7 @@ export function SupportBot() {
         </div>
       )}
 
-      <div className="support-bot-launcher flex items-center gap-3">
+      <div className="flex items-center gap-3">
         {!open && (
           <span className="hidden items-center gap-2 rounded-full border border-border bg-card/90 px-3 py-1.5 text-xs font-semibold text-card-foreground shadow sm:flex">
             <span className="h-2.5 w-2.5 rounded-full bg-success" /> Support • Online 24/7
